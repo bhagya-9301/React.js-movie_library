@@ -16,7 +16,7 @@ const MovieDetail = () => {
     useEffect(() => {
         const fetchMovie = async () => {
             try {
-                const response = await axios.get(`https://www.omdbapi.com/?apikey=4a231c73&i=${id}`);
+                const response = await axios.get(`https://www.omdbapi.com/?apikey='YOUR_API_KEY'=${id}`);
                 if (response.data.Response === "True") {
                     setMovie(response.data);
                     setError('');
