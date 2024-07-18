@@ -30,7 +30,7 @@ const Home = () => {
                 setError('Please enter a movie name.');
                 return;
             }
-            const response = await axios.get(`https://www.omdbapi.com/?apikey=4a231c73&s=${query}`);
+            const response = await axios.get(`https://www.omdbapi.com/?apikey='YOUR_API_KEY'=${query}`);
             if (response.data.Response === "True") {
                 setMovies(response.data.Search);
                 setError('');
