@@ -1,0 +1,76 @@
+.login {
+    max-width: 400px;
+    max-height: 500px;
+    margin: 50px auto;
+    margin-top: 130px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    background-color: white;
+  }
+  
+
+  .lh2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: black;
+  }
+
+  .llabel{
+    color: black;
+    font-weight: bold;
+  }
+  
+
+  input[type="email"],
+  input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+  
+
+  .lbutton {
+    width: 30%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: 140px;
+  }
+  
+  .lbutton:hover {
+    background-color: #45a049;
+  }
+  
+
+  .lp[style*="color: red"] {
+    color: red;
+    text-align: center;
+  }
+  
+
+  .llink {
+    color: #06df2e;
+    text-decoration: none;
+  }
+
+  
+  .llink:hover {
+    text-decoration: underline;
+  }
+
+  
+  p {
+    text-align: center;
+    margin-top: 10px;
+  }
+  
