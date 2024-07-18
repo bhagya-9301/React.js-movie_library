@@ -10,24 +10,11 @@ const app = express();
 const port = 5000;
 
 // Session secret key
-const secret = crypto.randomBytes(64).toString('hex');
+const secret = 'YOUR_SECRET_KEY';
 
 // MySQL connection
-const db = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "movie_register"
-});
 
 // Connect to MySQL
-db.connect((err) => {
-    if (err) {
-        console.error('Error connecting to MySQL:', err);
-        throw err;
-    }
-    console.log('Connected to MySQL Database.');
-});
 
 // Middleware
 app.use(cors({
@@ -73,7 +60,7 @@ app.post('/register', (req, res) => {
                 console.error('Error hashing password:', err);
                 return res.status(500).send('Server error');
             }
-            const sql = 'INSERT INTO login (full_name, email_id, contact_number, pass) VALUES (?, ?, ?, ?)';
+            const sql = 'INSERT INTO (database store registration) (full_name, email_id, contact_number, pass) VALUES (?, ?, ?, ?)';
             const values = [full_name, email_id, contact_number, hashed_password];
             db.query(sql, values, (err, result) => {
                 if (err) {
@@ -91,7 +78,7 @@ app.post('/register', (req, res) => {
 // Login   
 app.post('/login', (req, res) => {
     const { email_id, password } = req.body;
-    const sql = "SELECT id, full_name, pass FROM login WHERE email_id = ?";
+    const sql = "SELECT id, full_name, pass FROM (database store registration) WHERE email_id = ?";
     db.query(sql, [email_id], (err, results) => {
         if (err) {
             console.error('Database error: ', err);
@@ -121,8 +108,8 @@ app.post('/login', (req, res) => {
 app.get('/api/lists/:userId', (req, res) => {
     const { userId } = req.params;
 
-    const publicQuery = 'SELECT * FROM movie_list WHERE user_id = ? AND is_public = 1';
-    const privateQuery = 'SELECT * FROM movie_list WHERE user_id = ? AND is_public = 0';
+    const publicQuery = 'SELECT * FROM (database store movie list) WHERE user_id = ? AND is_public = 1';
+    const privateQuery = 'SELECT * FROM (database store movie list) WHERE user_id = ? AND is_public = 0';
 
     db.query(publicQuery, [userId], async (err, publicMovies) => {
         if (err) {
@@ -140,7 +127,7 @@ app.get('/api/lists/:userId', (req, res) => {
 
             try {
                 const fetchMovieDetails = async (list) => {
-                    const movieResponse = await axios.get(`https://www.omdbapi.com/?apikey=4a231c73&i=${list.movie_id}`);
+                    const movieResponse = await axios.get(`https://www.omdbapi.com/?apikey='YOUR_API_KEY'=${list.movie_id}`);
                     return { ...list, movie: movieResponse.data };
                 };
 
@@ -159,8 +146,8 @@ app.get('/api/lists/:userId', (req, res) => {
 //save either in public or private
 app.post('/api/lists/add', (req, res) => {
     const { user_id, movie_id, is_public } = req.body;
-    const deleteQuery = 'DELETE FROM movie_list WHERE user_id = ? AND movie_id = ? AND is_public = ?';
-    const addQuery = 'INSERT INTO movie_list (user_id, movie_id, is_public) VALUES (?, ?, ?)';
+    const deleteQuery = 'DELETE FROM (database store movie list) WHERE user_id = ? AND movie_id = ? AND is_public = ?';
+    const addQuery = 'INSERT INTO (database store movie list) (user_id, movie_id, is_public) VALUES (?, ?, ?)';
 
     db.query(deleteQuery, [user_id, movie_id, !is_public], (deleteErr) => {
         if (deleteErr) {
@@ -183,7 +170,7 @@ app.post('/api/lists/add', (req, res) => {
 app.delete('/api/lists/remove', (req, res) => {
     const { userId, movieId } = req.body;
 
-    const deleteQuery = 'DELETE FROM movie_list WHERE user_id = ? AND movie_id = ?';
+    const deleteQuery = 'DELETE FROM (database store movie list) WHERE user_id = ? AND movie_id = ?';
 
     db.query(deleteQuery, [userId, movieId], (err, result) => {
         if (err) {
@@ -197,7 +184,7 @@ app.delete('/api/lists/remove', (req, res) => {
 
 app.delete('/api/lists/remove', checkAuth, (req, res) => {
     const { movieId } = req.body;
-    db.query('DELETE FROM movie_list WHERE user_id = ? AND movie_id = ?', [req.session.userId, movieId], (err, results) => {
+    db.query('DELETE FROM (database store movie list) WHERE user_id = ? AND movie_id = ?', [req.session.userId, movieId], (err, results) => {
         if (err) {
             console.error('Error removing movie from list:', err);
             res.status(500).send('Error removing movie from list');
@@ -211,7 +198,7 @@ app.delete('/api/lists/remove', checkAuth, (req, res) => {
 app.get('/api/suggestions', async (req, res) => {
     const query = req.query.q;
     try {
-        const response = await axios.get(`https://www.omdbapi.com/?apikey=4a231c73&s=${query}`);
+        const response = await axios.get(`https://www.omdbapi.com/?apikey='YOUR_API_KEY'=${query}`);
         if (response.data.Response === "True") {
             res.json(response.data.Search);
         } else {
@@ -235,7 +222,7 @@ router.post('/add', async (req, res) => {
     try {
         
         db.query(
-            'INSERT INTO movie_list (movie_id, user_id, is_public) VALUES (?, ?, ?)',
+            'INSERT INTO (database store movie list) (movie_id, user_id, is_public) VALUES (?, ?, ?)',
             [movie_id, userId, is_public],
             (err, result) => {
                 if (err) {
